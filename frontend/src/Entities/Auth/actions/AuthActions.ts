@@ -15,6 +15,16 @@ const pendingEmailKey = "pendingVerificationEmail"
 const resendAvailableAtKey = "verificationResendAvailableAt"
 const resendCooldown = 60
 
+const errorMessages: Record<string, string> = {
+    "otp is invalid.": "Неверный код подтверждения. Проверьте код и попробуйте ещё раз.",
+    "otp has expired or does not exist.": "Срок действия кода истёк. Запросите новый код.",
+    "maximum otp verification attempts exceeded.": "Слишком много неверных попыток. Запросите новый код.",
+    "otp operations are temporarily locked for this target.": "Проверка кода временно заблокирована. Попробуйте позже.",
+    "otp resend cooldown is active.": "Подождите минуту перед повторной отправкой кода.",
+    "otp request rate limit exceeded.": "Слишком много запросов кода. Попробуйте через минуту.",
+    "internal server error": "На сервере произошла ошибка. Попробуйте позже.",
+}
+
 function savePendingEmail(email: string | null, resendAvailableAt = 0) {
     try {
         if (email === null) {
@@ -53,11 +63,17 @@ function getErrorMessage(error: unknown, fallback: string) {
     if (!axios.isAxiosError<ApiErrorResponse>(error)) return fallback
     if (error.code === "ECONNABORTED" || error.code === "ETIMEDOUT") return "Сервер долго отвечает. Попробуйте ещё раз."
     if (!error.response) return "Не удалось подключиться к серверу."
-    if (error.response.status >= 500) return fallback
+    if (error.response.status === 409) return "Аккаунт с такой почтой уже существует. Войдите в аккаунт."
+    if (error.response.status >= 500) return "На сервере произошла ошибка. Попробуйте позже."
 
     const message = error.response.data?.message
-    if (Array.isArray(message) && message.length > 0) return message.join(". ")
-    return typeof message === "string" && message ? message : fallback
+    if (Array.isArray(message) && message.length > 0) {
+        return message.map(text => errorMessages[text.trim().toLowerCase()] ?? text).join(". ")
+    }
+    if (typeof message === "string" && message.trim()) {
+        return errorMessages[message.trim().toLowerCase()] ?? message
+    }
+    return fallback
 }
 
 export const RegistAction = (name: string, email: string, password: string) =>
