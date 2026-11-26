@@ -1,0 +1,126 @@
+.RegistBlock {
+    $navy: #202f45;
+    $muted: #4d6172;
+
+    display: grid;
+    grid-template-columns: minmax(0, 46fr) minmax(0, 54fr);
+    width: 100%;
+    min-height: 100vh;
+    min-height: 100dvh;
+    background-color: #fff;
+    color: $navy;
+    font-family: "Segoe UI", system-ui, sans-serif;
+
+    &__intro {
+        padding: clamp(30px, 5vw, 64px);
+        background: linear-gradient(145deg, #e8f0ec, #a4c6ba);
+    }
+
+    &__brand {
+        margin: 0 0 clamp(24px, 4vw, 44px);
+        font-size: 24px;
+        font-weight: 750;
+    }
+
+    &__headline,
+    &__title {
+        margin: 0;
+        letter-spacing: -.045em;
+        line-height: 1.06;
+    }
+
+    &__headline {
+        font-size: clamp(32px, 4.2vw, 58px);
+        font-weight: 780;
+    }
+
+    &__title {
+        font-size: clamp(30px, 4vw, 46px);
+    }
+
+    &__description {
+        margin: 16px 0 0;
+        color: $muted;
+        line-height: 1.55;
+    }
+
+    &__panel {
+        display: grid;
+        place-items: center;
+        padding: clamp(30px, 6vw, 78px);
+    }
+
+    &__content {
+        width: min(100%, 410px);
+    }
+
+    &__form {
+        display: grid;
+        gap: 18px;
+        margin-top: 32px;
+    }
+
+    &__field {
+        display: grid;
+        gap: 8px;
+        font-size: 15px;
+        font-weight: 650;
+
+    }
+
+    &__btn {
+        min-height: 54px;
+        margin-top: 5px;
+        padding: 12px 18px;
+        border: none;
+        border-radius: 11px;
+        background-color: $navy;
+        color: #fff;
+        font: inherit;
+        font-weight: 700;
+        cursor: pointer;
+
+        &:hover:not(:disabled) {
+            background-color: #314862;
+        }
+
+        &:disabled {
+            opacity: .65;
+            cursor: default;
+        }
+    }
+
+    &__account {
+        margin: 22px 0 0;
+        color: $muted;
+        font-size: 15px;
+    }
+
+    &__link {
+        color: $navy;
+        font-weight: 700;
+        text-decoration: underline;
+        text-underline-offset: 3px;
+    }
+
+    :focus-visible {
+        outline: 3px solid #4d796d;
+        outline-offset: 3px;
+    }
+
+    @media (max-width: 740px) {
+        grid-template-columns: minmax(0, 1fr);
+        grid-template-rows: auto 1fr;
+
+        &__panel {
+            place-items: start center;
+        }
+    }
+
+    @media (max-width: 375px) {
+        &__intro,
+        &__panel {
+            padding: 24px;
+        }
+    }
+}

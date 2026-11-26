@@ -1,0 +1,28 @@
+.Input {
+    box-sizing: border-box;
+    width: 100%;
+    min-width: 0;
+    min-height: 50px;
+    padding: 10px 14px;
+    border: 1px solid #aebeb9;
+    border-radius: 10px;
+    background-color: #f8fbfa;
+    color: #202f45;
+    font: inherit;
+    font-size: 16px;
+    font-weight: 400;
+
+    &::placeholder {
+        color: #576a76;
+    }
+
+    &:focus-visible {
+        outline: 3px solid #4d796d;
+        outline-offset: 3px;
+    }
+
+    &:disabled {
+        background-color: #edf3f0;
+        cursor: default;
+    }
+}

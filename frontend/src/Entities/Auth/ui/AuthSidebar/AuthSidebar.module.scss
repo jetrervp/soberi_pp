@@ -1,0 +1,28 @@
+.AuthSidebar {
+    padding: clamp(30px, 5vw, 64px);
+    background: linear-gradient(145deg, #e8f0ec, #a4c6ba);
+
+    &__brand {
+        margin: 0 0 clamp(24px, 4vw, 44px);
+        font-size: 24px;
+        font-weight: 750;
+    }
+
+    &__headline {
+        margin: 0;
+        letter-spacing: -.045em;
+        line-height: 1.06;
+        font-size: clamp(32px, 4.2vw, 58px);
+        font-weight: 780;
+    }
+
+    &__description {
+        margin: 16px 0 0;
+        color: #4d6172;
+        line-height: 1.55;
+    }
+
+    @media (max-width: 375px) {
+        padding: 24px;
+    }
+}
