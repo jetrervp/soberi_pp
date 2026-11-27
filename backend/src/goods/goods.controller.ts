@@ -23,7 +23,7 @@ import { GetGoodsQueryDto } from './dto/get-goods-query.dto';
 import { JwtGuard } from '../common/guards/auth.guard';
 import { CurrentUser } from '../common/decorators/current-user.decorator';
 
-@ApiTags('Товары (Goods)')
+@ApiTags('Товары')
 @ApiBearerAuth()
 @Controller('goods')
 @UseGuards(JwtGuard)

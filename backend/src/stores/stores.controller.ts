@@ -27,7 +27,7 @@ import { StoresService } from './stores.service';
 import { JwtGuard } from '../common/guards/auth.guard';
 import { CurrentUser } from '../common/decorators/current-user.decorator';
 
-@ApiTags('Магазины (Stores)')
+@ApiTags('Магазины')
 @ApiBearerAuth()
 @Controller('stores')
 @UseGuards(JwtGuard)

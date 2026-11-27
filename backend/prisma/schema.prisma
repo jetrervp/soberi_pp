@@ -24,6 +24,19 @@ enum StoreStatus {
   BLOCKED
 }
 
+enum OrderStatus {
+  PENDING     
+  PROCESSING  
+  SHIPPED      
+  DELIVERED    
+  CANCELLED    
+}
+
+enum PaymentMethod {
+  CARD_ONLINE
+  CASH_ON_DELIVERY
+}
+
 model User {
   id            String        @id @default(uuid())
   email         String        @unique
@@ -34,6 +47,7 @@ model User {
   isBlocked     Boolean       @default(false)
   createdAt     DateTime      @default(now())
   memberships   StoreMember[]
+  orders        Order[]
 }
 
 model Store {
@@ -49,6 +63,7 @@ model Store {
   createdAt   DateTime      @default(now())
   members     StoreMember[]
   goods       Good[]
+  orders      Order[]
 }
 
 model StoreMember {
@@ -71,9 +86,10 @@ model GoodCategory {
 }
 
 model Size {
-  id    String @id @default(uuid())
-  name      String     @unique
-  goodSizes GoodSize[]
+  id          String @id @default(uuid())
+  name        String     @unique
+  goodSizes   GoodSize[]
+  orderItems  OrderItem[]
 }
 
 model Good {
@@ -89,6 +105,7 @@ model Good {
   isActive    Boolean      @default(true)
   createdAt   DateTime     @default(now())
   sizes       GoodSize[]
+  orderItems  OrderItem[]
 }
 
 model GoodSize {
@@ -107,3 +124,43 @@ model News {
   body      String
   createdAt DateTime @default(now())
 }
+
+model Order {
+  id            String        @id @default(uuid())
+  userId        String
+  user          User          @relation(fields: [userId], references: [id])
+  storeId       String
+  store         Store         @relation(fields: [storeId], references: [id])
+  
+  status        OrderStatus   @default(PENDING)
+  paymentMethod PaymentMethod 
+  
+  totalPrice    Int           
+  customerName  String
+  phone         String
+  address       String?
+  comment       String?
+  
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  items         OrderItem[]
+
+  @@index([storeId])
+  @@index([userId])
+}
+
+model OrderItem {
+  id       String  @id @default(uuid())
+  orderId  String
+  order    Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  
+  goodId   String
+  good     Good    @relation(fields: [goodId], references: [id])
+  
+  sizeId   String?
+  size     Size?   @relation(fields: [sizeId], references: [id])
+  
+  quantity Int
+  price    Int     
+}
+

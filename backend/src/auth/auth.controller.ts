@@ -26,13 +26,14 @@ import {
   ApiOperation,
   ApiUnauthorizedResponse,
   ApiBody,
+  ApiTags,
 } from '@nestjs/swagger';
 
+@ApiTags('Авторизация')
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  // Регистрация
   @ApiOperation({
     summary: 'Создание аккаунта',
     description: 'Создаёт новый аккаунт пользователя.',
@@ -52,7 +53,6 @@ export class AuthController {
     return this.authService.register(dto);
   }
 
-  // Повторная отправка кода подтверждения
   @ApiOperation({
     summary: 'Повторная отправка кода подтверждения',
     description: 'Отправляет новый 6-значный код на почту.',
@@ -75,7 +75,6 @@ export class AuthController {
     return this.authService.resendVerificationCode(dto.email);
   }
 
-  // Подтверждение электронной почты
   @ApiOperation({
     summary: 'Подтверждение электронной почты',
     description:
@@ -106,7 +105,6 @@ export class AuthController {
     return this.authService.verifyEmail(res, dto);
   }
 
-  // Вход в систему
   @ApiOperation({
     summary: 'Вход в систему',
     description: 'Авторизует пользователя и выдаёт токен доступа.',
@@ -134,7 +132,6 @@ export class AuthController {
     return this.authService.login(res, dto);
   }
 
-  // Обновление токена
   @ApiOperation({
     summary: 'Обновление токена',
     description: 'Генерирует новый токен доступа.',
@@ -158,7 +155,6 @@ export class AuthController {
     return this.authService.refresh(req, res);
   }
 
-  // Выход из системы
   @ApiOperation({
     summary: 'Выход из системы',
     description: 'Завершает пользовательскую сессию.',
