@@ -1,4 +1,3 @@
-
 import {
   Body,
   Controller,
@@ -123,7 +122,8 @@ export class AuthController {
     description: 'Пользователь не найден.',
   })
   @ApiUnauthorizedResponse({
-    description: 'Неверный пароль, почта не подтверждена или пользователь заблокирован.',
+    description:
+      'Неверный пароль, почта не подтверждена или пользователь заблокирован.',
   })
   @Post('login')
   @HttpCode(HttpStatus.OK)

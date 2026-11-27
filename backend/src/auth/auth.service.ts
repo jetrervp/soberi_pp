@@ -229,27 +229,25 @@ export class AuthService {
   }
 
   private async sendVerificationCode(email: string) {
-  const { otp } = await this.otpManager.generate({
-    type: 'email',
-    identifier: email,
-    intent: 'verify-email',
-  });
+    const { otp } = await this.otpManager.generate({
+      type: 'email',
+      identifier: email,
+      intent: 'verify-email',
+    });
 
-  if (!otp) {
-    throw new Error('Не удалось получить OTP');
-  }
+    if (!otp) {
+      throw new Error('Не удалось получить OTP');
+    }
 
-  await this.mailerService.sendMail({
-    to: email,
-    subject: 'Код подтверждения почты',
-    text: `Ваш код подтверждения: ${otp}. Код действует 10 минут.`,
-    html: `
+    await this.mailerService.sendMail({
+      to: email,
+      subject: 'Код подтверждения почты',
+      text: `Ваш код подтверждения: ${otp}. Код действует 10 минут.`,
+      html: `
       <p>Ваш код подтверждения: <b>${otp}</b></p>
       <p>Код действует 10 минут.</p>
     `,
-  });
-
-
+    });
 
     await this.mailerService.sendMail({
       to: email,

@@ -28,63 +28,67 @@ model User {
   id            String        @id @default(uuid())
   email         String        @unique
   password      String
-  name          String                    // ← добавили имя
-  emailVerified Boolean       @default(false)  // ← добавили флаг
+  name          String
+  emailVerified Boolean       @default(false) 
   role          PlatformRole  @default(USER)
   isBlocked     Boolean       @default(false)
   createdAt     DateTime      @default(now())
   memberships   StoreMember[]
 }
 
-
 model Store {
-  id        Int           @id @default(autoincrement())
-  name      String
-  slug      String        @unique
-  status    StoreStatus   @default(DRAFT)
-  createdAt DateTime      @default(now())
-  members   StoreMember[]
-  goods     Good[]
+  id          String        @id @default(uuid()) 
+  name        String
+  slug        String        @unique
+  description String?
+  phone       String?
+  address     String?
+  logoUrl     String?
+  bannerUrl   String?
+  status      StoreStatus   @default(DRAFT)
+  createdAt   DateTime      @default(now())
+  members     StoreMember[]
+  goods       Good[]
 }
 
 model StoreMember {
   userId  String
-  storeId Int
+  storeId String
   role    StoreRole
-  user    User      @relation(fields: [userId], references: [id])
+  user    User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   store   Store     @relation(fields: [storeId], references: [id])
 
   @@id([userId, storeId])
 }
 
 model GoodCategory {
-  id       Int            @id @default(autoincrement())
+  id       String        @id @default(uuid())
   name     String
-  parentId Int?
+  parentId String?
   parent   GoodCategory?  @relation("CategoryTree", fields: [parentId], references: [id])
   children GoodCategory[] @relation("CategoryTree")
   goods    Good[]
 }
 
 model Brand {
-  id    Int    @id @default(autoincrement())
+  id    String @id @default(uuid())
   name  String @unique
   goods Good[]
 }
 
 model Size {
-  id        Int        @id @default(autoincrement())
+  id    String @id @default(uuid())
   name      String     @unique
   goodSizes GoodSize[]
 }
 
 model Good {
-  id          Int          @id @default(autoincrement())
-  storeId     Int
+  id          String       @id @default(uuid())
+  storeId     String
   store       Store        @relation(fields: [storeId], references: [id])
-  categoryId  Int
+  categoryId  String
   category    GoodCategory @relation(fields: [categoryId], references: [id])
-  brandId     Int?
+  brandId     String?
   brand       Brand?       @relation(fields: [brandId], references: [id])
   name        String
   description String?
@@ -96,8 +100,8 @@ model Good {
 }
 
 model GoodSize {
-  goodId Int
-  sizeId Int
+  goodId String
+  sizeId String
   stock  Int  @default(0)
   good   Good @relation(fields: [goodId], references: [id])
   size   Size @relation(fields: [sizeId], references: [id])
@@ -106,7 +110,7 @@ model GoodSize {
 }
 
 model News {
-  id        Int      @id @default(autoincrement())
+  id        String   @id @default(uuid())
   title     String
   body      String
   createdAt DateTime @default(now())
