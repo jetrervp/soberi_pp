@@ -7,6 +7,7 @@ import { instance } from './AppApi'
 import { RestorePendingEmailAction } from '../Entities/Auth'
 import AuthApi from '../Entities/Auth/api/AuthApi'
 import { restoreSession } from '../Entities/Auth/model/AuthStore'
+import { GetProfileAction } from '../Entities/Profile'
 import './App.scss'
 
 const store = setupStore()
@@ -26,6 +27,7 @@ void AuthApi.refresh()
   .then(({ data }) => {
     if (typeof data.accessToken === 'string' && data.accessToken) {
       store.dispatch(restoreSession(data.accessToken))
+      void store.dispatch(GetProfileAction())
     }
   })
   .catch(() => undefined)

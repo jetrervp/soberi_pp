@@ -1,5 +1,5 @@
 import { type ComponentPropsWithoutRef, type FC } from 'react'
-import s from './Input.module.scss'
+import s from './input.module.scss'
 
 interface IProps extends Omit<ComponentPropsWithoutRef<'input'>, 'value' | 'onChange'> {
     value: string

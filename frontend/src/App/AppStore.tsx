@@ -2,11 +2,13 @@ import { combineReducers, configureStore } from '@reduxjs/toolkit'
 import { useSelector, type TypedUseSelectorHook } from 'react-redux'
 import { useDispatch } from 'react-redux'
 import { AuthStore } from '../Entities/Auth'
+import { ProfileStore } from '../Entities/Profile'
 
 
 
 const rootReducers = combineReducers({
-    AuthStore
+    AuthStore,
+    ProfileStore
 })
 
 

@@ -1,0 +1,142 @@
+.page {
+    color: #20323a;
+    font: 16px/1.5 "Segoe UI", system-ui, sans-serif;
+    overflow-wrap: anywhere;
+
+    *, *::before, *::after { box-sizing: border-box; }
+    h1, h2, h3 { line-height: 1.2; }
+    h1, > h2 { margin: 0 0 20px; font-size: clamp(24px, 4vw, 34px); }
+    h3 { font-size: 20px; }
+    a:not(.primary, .secondary) { color: #285744; }
+    [role="alert"] { color: #922b21; }
+    :focus-visible { outline: 3px solid #648b73; outline-offset: 2px; }
+
+    input, select {
+        width: 100%;
+        min-width: 0;
+        padding: 9px 11px;
+        border: 1px solid #becfc4;
+        border-radius: 8px;
+        background: #fff;
+        color: inherit;
+        font: inherit;
+    }
+
+    label { display: grid; min-width: 0; gap: 4px; margin-top: 12px; font-weight: 600; }
+    label input, label select { font-weight: 400; }
+}
+
+.checkoutGrid, .detailGrid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr);
+    gap: 24px;
+    align-items: start;
+}
+
+.checkoutGrid fieldset {
+    min-width: 0;
+    margin: 0 0 18px;
+    padding: 14px 18px 18px;
+    border: 1px solid #d7e2da;
+    border-radius: 10px;
+}
+
+.checkoutGrid legend { padding-inline: 5px; font-weight: 700; }
+.recipientFields { min-width: 0; }
+.fieldRow { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+
+.summary, .success, .panel {
+    min-width: 0;
+    padding: clamp(16px, 3vw, 26px);
+    border-radius: 10px;
+    background: #f0f5f2;
+
+    h2 { font-size: 20px; margin-bottom: 10px; }
+    p { margin-top: 10px; }
+}
+
+.summary, .success { background: #e3f0e9; }
+.summary .primary, .panel .primary { margin-top: 16px; }
+.success { max-width: 740px; }
+
+.actions, .tabs { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-top: 16px; }
+.tabs { margin: 0 0 16px; }
+
+.page .primary, .page .secondary {
+    display: inline-block;
+    padding: 10px 15px;
+    border: 0;
+    border-radius: 7px;
+    background: #195d50;
+    color: #fff;
+    font: 600 .94rem/1.35 "Segoe UI", system-ui, sans-serif;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.page .secondary { background: #e6eee9; color: #24483d; }
+.page .secondary[aria-pressed="true"] { background: #cfe5da; }
+.page button:disabled { opacity: .55; cursor: default; }
+
+.orderList, .orderItems, .history, .timeline { list-style: none; padding: 0; }
+.orderList { display: grid; gap: 8px; margin: 8px 0 14px; }
+.orderList li a {
+    display: grid;
+    grid-template-columns: minmax(95px, .7fr) minmax(120px, 1.4fr) minmax(130px, 1fr) auto auto;
+    align-items: center;
+    gap: 10px 16px;
+    padding: 12px 16px;
+    border: 1px solid #d7e2da;
+    border-radius: 9px;
+    background: #f6faf8;
+    text-decoration: none;
+
+    &:hover { background: #eaf4ee; }
+}
+
+.badge { display: inline-block; width: fit-content; padding: 4px 9px; border-radius: 7px; background: #d8ece2; color: #254d41; }
+.orderHeading { margin: 12px 0 20px; }
+.orderHeading h1 { margin: 0 0 4px; }
+.orderItems { margin: 8px 0 18px; }
+.orderItems li { display: grid; grid-template-columns: 1fr auto auto; gap: 8px 12px; padding: 8px 0; border-bottom: 1px solid #d7e2da; }
+.buyer { padding: 12px 2px; }
+.buyer h2 { margin: 10px 0 4px; font-size: 17px; }
+.successNotice { padding: 8px; border-radius: 6px; background: #d8ece2; }
+.history { margin-top: 16px; }
+.history li { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 4px 8px; padding: 5px 0; }
+.history time, .timeline time { color: #52695c; font-size: .88rem; }
+
+.tracking { width: min(100% - 28px, 740px); margin: 28px auto; }
+.trackingStore { margin: -8px 0 14px; }
+.timeline { margin-top: 16px; }
+.timeline li {
+    position: relative;
+    display: grid;
+    gap: 5px;
+    padding: 8px 8px 14px 20px;
+    border-left: 2px solid #c2d3c9;
+    color: #52695c;
+
+    &::before { content: ""; position: absolute; left: -5px; top: 15px; width: 8px; height: 8px; border-radius: 50%; background: #c2d3c9; }
+    &[data-done="true"] { color: #20323a; }
+    &[data-done="true"]::before { background: #32614f; }
+    &[aria-current="step"] { background: #e3f0e9; }
+}
+
+.visuallyHidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    clip-path: inset(50%);
+    overflow: hidden;
+}
+
+@media (max-width: 760px) {
+    .checkoutGrid, .detailGrid { grid-template-columns: minmax(0, 1fr); gap: 14px; }
+    .orderList li a { grid-template-columns: 1fr 1fr; }
+}
+
+@media (max-width: 420px) {
+    .fieldRow { grid-template-columns: minmax(0, 1fr); gap: 0; }
+    .orderList li a { grid-template-columns: minmax(0, 1fr); }
+}

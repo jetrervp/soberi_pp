@@ -1,20 +1,21 @@
 import { useState, type FC } from "react"
-import { Navigate } from "react-router-dom"
 import { useAppDispatch, useAppSelector } from "../App/AppStore"
-import { ConfirmEmailBlock, RegistAction, RegistBlock, ResendCodeAction, VerifyEmailAction } from "../Entities/Auth"
+import { ClearPendingEmailAction, ConfirmEmailBlock, RegistAction, RegistBlock, ResendCodeAction, VerifyEmailAction } from "../Entities/Auth"
 
 const Regist: FC = () => {
     const dispatch = useAppDispatch()
-    const { accessToken, error, isRegistering, isVerifying, isResending, pendingEmail, resendAvailableAt } = useAppSelector(
+    const { error, isRegistering, isVerifying, isResending, pendingEmail, resendAvailableAt } = useAppSelector(
         state => state.AuthStore
     )
     const [codeResent, setCodeResent] = useState(false)
 
-    if (accessToken) return <Navigate to="/" replace />
-
     return pendingEmail
         ? <ConfirmEmailBlock
             email={pendingEmail}
+            changeEmail={() => {
+                setCodeResent(false)
+                dispatch(ClearPendingEmailAction())
+            }}
             error={error}
             busy={isVerifying || isResending}
             resending={isResending}

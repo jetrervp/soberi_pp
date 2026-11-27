@@ -58,7 +58,10 @@ const AuthStore = createSlice({
 
         setPendingEmail(state, action: PayloadAction<string | null>) {
             state.pendingEmail = action.payload
-            if (action.payload === null) state.resendAvailableAt = 0
+            if (action.payload === null) {
+                state.resendAvailableAt = 0
+                state.error = null
+            }
         },
         setResendAvailableAt(state, action: PayloadAction<number>) {
             state.resendAvailableAt = action.payload

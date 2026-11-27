@@ -1,0 +1,17 @@
+.DashboardLayout {
+    display: grid;
+    grid-template-columns: 240px minmax(0, 1fr);
+    min-height: 100dvh;
+    background: #f7faf8;
+    color: #20352e;
+    font-family: system-ui, sans-serif;
+
+    &__content {
+        padding: clamp(20px, 4vw, 48px);
+    }
+
+    @media (max-width: 640px) {
+        grid-template-columns: minmax(0, 1fr);
+        grid-template-rows: auto 1fr;
+    }
+}

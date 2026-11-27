@@ -41,7 +41,7 @@ const RegistBlock: FC<IProps> = ({ regist, busy, error }) => {
                     </label>
                     {error && <p role="alert">{error}</p>}
                     <button type="submit" className={s.RegistBlock__btn} disabled={busy || !name.trim() || !email.trim() || password.length < 8}>
-                        {busy ? 'Регистрируем…' : 'Зарегистрироваться'}
+                        Зарегистрироваться
                     </button>
                 </form>
 

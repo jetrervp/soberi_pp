@@ -1,14 +1,12 @@
 import type { FC } from "react"
-import { Navigate, useNavigate } from "react-router-dom"
+import { useNavigate } from "react-router-dom"
 import { useAppDispatch, useAppSelector } from "../App/AppStore"
 import { LoginAction, LoginBlock } from "../Entities/Auth"
 
 const Login: FC = () => {
     const dispatch = useAppDispatch()
     const navigate = useNavigate()
-    const { accessToken, error, isLoggingIn } = useAppSelector(state => state.AuthStore)
-
-    if (accessToken) return <Navigate to="/" replace />
+    const { error, isLoggingIn } = useAppSelector(state => state.AuthStore)
 
     return <LoginBlock
         error={error}

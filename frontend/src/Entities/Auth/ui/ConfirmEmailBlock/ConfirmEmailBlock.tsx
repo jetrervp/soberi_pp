@@ -6,6 +6,7 @@ import { Input } from '../../../../widgets/UI'
 interface IProps {
     confirm: (code: string) => void
     resend: () => void
+    changeEmail: () => void
     email: string
     busy: boolean
     resending: boolean
@@ -14,7 +15,7 @@ interface IProps {
     resendAvailableAt: number
 }
 
-const ConfirmEmailBlock: FC<IProps> = ({ confirm, resend, email, busy, resending, error, codeResent, resendAvailableAt }) => {
+const ConfirmEmailBlock: FC<IProps> = ({ confirm, resend, changeEmail, email, busy, resending, error, codeResent, resendAvailableAt }) => {
     const [code, setCode] = useState<string>("")
     const [now, setNow] = useState(() => Date.now())
     const secondsLeft = Math.max(0, Math.ceil((resendAvailableAt - now) / 1000))
@@ -38,7 +39,7 @@ const ConfirmEmailBlock: FC<IProps> = ({ confirm, resend, email, busy, resending
         <section className={s.ConfirmEmailBlock__panel}>
             <div className={s.ConfirmEmailBlock__content}>
                 <h1 className={s.ConfirmEmailBlock__title}>Введите код</h1>
-                <p className={s.ConfirmEmailBlock__description}>Отправили код на {email}.</p>
+                <p className={s.ConfirmEmailBlock__description}>Введите код из письма на {email}.</p>
 
                 <form className={s.ConfirmEmailBlock__form} onSubmit={event => {
                     event.preventDefault()
@@ -65,6 +66,9 @@ const ConfirmEmailBlock: FC<IProps> = ({ confirm, resend, email, busy, resending
                         </button>
                         <button className={s.ConfirmEmailBlock__change} type="button" disabled={busy || secondsLeft > 0} onClick={resend}>
                             {resending ? 'Отправляем…' : secondsLeft > 0 ? `Отправить повторно через ${secondsLeft} сек.` : 'Отправить код повторно'}
+                        </button>
+                        <button className={s.ConfirmEmailBlock__change} type="button" disabled={busy} onClick={changeEmail}>
+                            Изменить email
                         </button>
                     </div>
                 </form>

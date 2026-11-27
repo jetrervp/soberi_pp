@@ -1,0 +1,77 @@
+.templatePicker {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 12px;
+    align-items: end;
+    padding: 10px 20px;
+
+    label { width: min(100%, 320px); margin: 0; }
+}
+
+.studio h1 {
+    margin: 0;
+    font-size: clamp(24px, 3vw, 34px);
+}
+
+.heading { padding: 14px 20px; }
+.toolbar { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0 0; }
+.toolbar button[aria-pressed="false"] { background: #e3ece5; color: #264336; }
+
+.builder {
+    display: grid;
+    grid-template-columns: minmax(180px, 1fr) minmax(0, 4fr) minmax(240px, 1.3fr);
+    min-height: 65vh;
+    border-block: 1px solid #d7e2da;
+    background: #edf3ef;
+}
+
+.tools, .workarea { min-width: 0; padding: 18px; }
+.workarea > .toolbar { margin: 0 0 16px; }
+.workarea:fullscreen { overflow: auto; background: #edf3ef; }
+.mobile { max-width: 375px; margin-inline: auto; }
+.empty { margin-top: 12px; color: #52695c; }
+
+.tools {
+    background: white;
+
+    h2, h3 { margin: 6px 0 12px; font-size: 17px; }
+    h3 { margin-top: 20px; }
+    label { margin: 10px 0; }
+
+    button { padding: 7px 10px; }
+    input[type="range"] { min-height: 0; }
+}
+
+.library, .blockActions { display: flex; flex-wrap: wrap; gap: 5px; }
+.order { display: grid; gap: 8px; list-style: none; }
+.order li { padding: 8px; border: 1px solid #d7e2da; border-radius: 9px; }
+.order li[data-drop="before"] { box-shadow: 0 -3px #32614f; }
+.order li[data-drop="after"] { box-shadow: 0 3px #32614f; }
+.order button[aria-pressed="false"], .blockActions button { background: #e3ece5; color: #264336; }
+.blockActions { margin-top: 5px; }
+.tools .dragHandle { cursor: grab; display: inline-block; padding: 6px; margin-inline-end: 4px; background: #e3ece5; color: #264336; }
+.dragHandle:active { cursor: grabbing; }
+.productList { min-width: 0; border: 0; margin-top: 18px; }
+.productList .check, .contactHead label { display: flex; align-items: center; gap: 8px; }
+.contactHead { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.contactField, .addContact { margin-top: 10px; }
+.contactField small { color: #922b21; }
+
+.workarea .resize {
+    position: absolute;
+    z-index: 1;
+    inset-inline-end: 4px;
+    inset-block-start: 4px;
+    padding: 2px 10px;
+    cursor: ew-resize;
+    touch-action: none;
+}
+
+@container storefront (max-width: 468px) {
+    .workarea .resize { display: none; }
+}
+
+@media (max-width: 850px) {
+    .builder { grid-template-columns: minmax(0, 1fr); }
+    .tools, .workarea { padding: 12px; }
+}

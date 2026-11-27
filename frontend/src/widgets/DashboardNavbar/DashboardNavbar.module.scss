@@ -1,0 +1,91 @@
+.Navbar {
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+    padding: 28px 20px;
+    background: #e8f0ec;
+    border-right: 1px solid #d4e1db;
+
+    &__brand {
+        padding-inline: 12px;
+        font-size: 24px;
+        font-weight: 750;
+    }
+
+    &__links {
+        display: grid;
+        gap: 6px;
+    }
+
+    &__link {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 10px 12px;
+        border-radius: 10px;
+        color: #38534a;
+        text-decoration: none;
+        font-weight: 550;
+
+        &:hover {
+            background: #dceae3;
+        }
+
+        &:focus-visible {
+            outline: 2px solid #32614f;
+            outline-offset: 2px;
+        }
+
+        &_active {
+            background: #cce2d7;
+            color: #183e30;
+        }
+
+        svg {
+            flex-shrink: 0;
+        }
+    }
+
+    &__profile {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-top: auto;
+        padding-top: 16px;
+        border-top: 1px solid #cbdcd3;
+    }
+
+    &__avatar {
+        border-radius: 50%;
+        object-fit: cover;
+        background: #cce2d7;
+    }
+
+    &__name {
+        font-weight: 700;
+    }
+
+    &__email {
+        margin-top: 3px;
+        color: #4d6172;
+        font-size: 13px;
+        overflow-wrap: anywhere;
+    }
+
+    @media (max-width: 640px) {
+        gap: 14px;
+        padding: 16px;
+        border-right: 0;
+        border-bottom: 1px solid #d4e1db;
+
+        &__links {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        &__link {
+            gap: 8px;
+            padding-inline: 8px;
+            font-size: 14px;
+        }
+    }
+}

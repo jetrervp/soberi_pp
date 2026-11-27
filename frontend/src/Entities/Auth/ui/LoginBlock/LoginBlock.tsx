@@ -32,7 +32,7 @@ const LoginBlock: FC<IProps> = ({ login, busy, error }) => {
                     </label>
                     <label className={s.LoginBlock__field}>
                         Пароль
-                        <Input name='password' type='password' autoComplete='current-password' placeholder='Пароль' value={password} onChange={setPassword} required />
+                        <Input name='password' type='password' autoComplete='current-password' value={password} onChange={setPassword} required />
                     </label>
                     {error && <p role="alert">{error}</p>}
                     <button className={s.LoginBlock__btn} type='submit' disabled={busy || !email.trim() || !password}>
