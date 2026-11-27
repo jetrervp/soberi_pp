@@ -26,6 +26,7 @@ import { UpdateStoreDto } from './dto/update-store.dto';
 import { StoresService } from './stores.service';
 import { JwtGuard } from '../common/guards/auth.guard';
 import { CurrentUser } from '../common/decorators/current-user.decorator';
+import { AddManagerDto } from './dto/add-manager.dto';
 
 @ApiTags('Магазины')
 @ApiBearerAuth()
@@ -100,6 +101,70 @@ export class StoresController {
   @ApiResponse({ status: 401, description: 'Не авторизован' })
   getMyStores(@CurrentUser('id') userId: string) {
     return this.storesService.getMyStores(userId);
+  }
+
+  @Post(':id/managers')
+  @ApiOperation({
+    summary: 'Назначить менеджера',
+    description:
+      'Добавляет пользователя в магазин с ролью MANAGER по его email. Доступно только владельцу (OWNER).',
+  })
+  @ApiParam({ name: 'id', description: 'UUID магазина' })
+  @ApiBody({ type: AddManagerDto }) // Добавь в импорты: import { AddManagerDto } from './dto/add-manager.dto';
+  @ApiResponse({ status: 201, description: 'Менеджер успешно назначен' })
+  @ApiResponse({
+    status: 400,
+    description: 'Пользователь уже является участником',
+  })
+  @ApiResponse({ status: 403, description: 'Нет прав (вы не владелец)' })
+  @ApiResponse({
+    status: 404,
+    description: 'Пользователь с таким email не найден',
+  })
+  addManager(
+    @CurrentUser('id') userId: string,
+    @Param('id') storeId: string,
+    @Body() dto: AddManagerDto,
+  ) {
+    return this.storesService.addManager(userId, storeId, dto.email);
+  }
+
+  @Get(':id/members')
+  @ApiOperation({
+    summary: 'Получить список участников магазина',
+    description:
+      'Возвращает владельца и всех назначенных менеджеров с их email и именами.',
+  })
+  @ApiParam({ name: 'id', description: 'UUID магазина' })
+  @ApiResponse({ status: 200, description: 'Список участников получен' })
+  @ApiResponse({ status: 403, description: 'Нет доступа' })
+  getStoreMembers(
+    @CurrentUser('id') userId: string,
+    @Param('id') storeId: string,
+  ) {
+    return this.storesService.getStoreMembers(userId, storeId);
+  }
+
+  @Delete(':id/managers/:managerUserId')
+  @ApiOperation({
+    summary: 'Удалить менеджера',
+    description:
+      'Снимает права менеджера с пользователя. Доступно только владельцу (OWNER).',
+  })
+  @ApiParam({ name: 'id', description: 'UUID магазина' })
+  @ApiParam({
+    name: 'managerUserId',
+    description: 'UUID пользователя-менеджера',
+  })
+  @ApiResponse({ status: 200, description: 'Менеджер удален' })
+  @ApiResponse({ status: 400, description: 'Нельзя удалить владельца' })
+  @ApiResponse({ status: 403, description: 'Нет прав' })
+  removeManager(
+    @CurrentUser('id') userId: string,
+    @Param('id') storeId: string,
+    @Param('managerUserId') managerUserId: string,
+  ) {
+    return this.storesService.removeManager(userId, storeId, managerUserId);
   }
 
   @Get(':id')

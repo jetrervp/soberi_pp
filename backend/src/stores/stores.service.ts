@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   ConflictException,
   ForbiddenException,
   Injectable,
@@ -168,5 +169,99 @@ export class StoresService {
     }
 
     return store;
+  }
+
+  async addManager(ownerId: string, storeId: string, managerEmail: string) {
+    const owner = await this.prisma.storeMember.findUnique({
+      where: { userId_storeId: { userId: ownerId, storeId } },
+    });
+
+    if (!owner || owner.role !== 'OWNER') {
+      throw new ForbiddenException(
+        'Только владелец магазина может назначать менеджеров',
+      );
+    }
+
+    const userToAdd = await this.prisma.user.findUnique({
+      where: { email: managerEmail },
+    });
+
+    if (!userToAdd) {
+      throw new NotFoundException('Пользователь с таким email не найден');
+    }
+
+    const existingMember = await this.prisma.storeMember.findUnique({
+      where: { userId_storeId: { userId: userToAdd.id, storeId } },
+    });
+
+    if (existingMember) {
+      throw new BadRequestException(
+        'Этот пользователь уже является участником магазина',
+      );
+    }
+
+    return this.prisma.storeMember.create({
+      data: {
+        userId: userToAdd.id,
+        storeId,
+        role: 'MANAGER',
+      },
+      include: {
+        user: {
+          select: { id: true, name: true, email: true },
+        },
+      },
+    });
+  }
+
+  async getStoreMembers(userId: string, storeId: string) {
+    const member = await this.prisma.storeMember.findUnique({
+      where: { userId_storeId: { userId, storeId } },
+    });
+
+    if (!member) {
+      throw new ForbiddenException('У вас нет доступа к этому магазину');
+    }
+
+    return this.prisma.storeMember.findMany({
+      where: { storeId },
+      include: {
+        user: {
+          select: { id: true, name: true, email: true },
+        },
+      },
+    });
+  }
+
+  async removeManager(ownerId: string, storeId: string, managerUserId: string) {
+    const owner = await this.prisma.storeMember.findUnique({
+      where: { userId_storeId: { userId: ownerId, storeId } },
+    });
+
+    if (!owner || owner.role !== 'OWNER') {
+      throw new ForbiddenException(
+        'Только владелец магазина может удалять менеджеров',
+      );
+    }
+
+    const manager = await this.prisma.storeMember.findUnique({
+      where: { userId_storeId: { userId: managerUserId, storeId } },
+    });
+
+    if (!manager) {
+      throw new NotFoundException(
+        'Пользователь не является участником этого магазина',
+      );
+    }
+
+    if (manager.role === 'OWNER') {
+      throw new BadRequestException('Нельзя удалить владельца магазина');
+    }
+
+    await this.prisma.storeMember.delete({
+      where: { userId_storeId: { userId: managerUserId, storeId } },
+    });
+
+    return { message: 'Менеджер успешно удален' };
   }
 }
