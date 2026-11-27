@@ -70,12 +70,6 @@ model GoodCategory {
   goods    Good[]
 }
 
-model Brand {
-  id    String @id @default(uuid())
-  name  String @unique
-  goods Good[]
-}
-
 model Size {
   id    String @id @default(uuid())
   name      String     @unique
@@ -88,8 +82,6 @@ model Good {
   store       Store        @relation(fields: [storeId], references: [id])
   categoryId  String
   category    GoodCategory @relation(fields: [categoryId], references: [id])
-  brandId     String?
-  brand       Brand?       @relation(fields: [brandId], references: [id])
   name        String
   description String?
   price       Int
