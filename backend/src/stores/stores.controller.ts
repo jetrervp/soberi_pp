@@ -10,13 +10,25 @@ import {
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
-import { FileFieldsInterceptor } from '@nestjs/platform-express'; // <-- Добавлен импорт
+import { FileFieldsInterceptor } from '@nestjs/platform-express';
+import {
+  ApiTags,
+  ApiBearerAuth,
+  ApiOperation,
+  ApiResponse,
+  ApiConsumes,
+  ApiBody,
+  ApiParam,
+} from '@nestjs/swagger';
+
 import { CreateStoreDto } from './dto/create-store.dto';
+import { UpdateStoreDto } from './dto/update-store.dto';
 import { StoresService } from './stores.service';
 import { JwtGuard } from '../common/guards/auth.guard';
 import { CurrentUser } from '../common/decorators/current-user.decorator';
-import { UpdateStoreDto } from './dto/update-store.dto';
 
+@ApiTags('Магазины (Stores)')
+@ApiBearerAuth()
 @Controller('stores')
 @UseGuards(JwtGuard)
 export class StoresController {
@@ -29,6 +41,46 @@ export class StoresController {
       { name: 'banner', maxCount: 1 },
     ]),
   )
+  @ApiOperation({
+    summary: 'Создать новый магазин',
+    description:
+      'Создает магазин, назначает текущего пользователя владельцем (OWNER). Поддерживает загрузку логотипа и баннера (multipart/form-data).',
+  })
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        name: { type: 'string', example: 'Мой первый магазин' },
+        description: { type: 'string', example: 'Лучший магазин одежды' },
+        phone: { type: 'string', example: '+79991234567' },
+        address: { type: 'string', example: 'г. Москва, ул. Ленина, д. 1' },
+        logo: {
+          type: 'string',
+          format: 'binary',
+          description: 'Файл логотипа',
+        },
+        banner: {
+          type: 'string',
+          format: 'binary',
+          description: 'Файл баннера',
+        },
+      },
+    },
+  })
+  @ApiResponse({ status: 201, description: 'Магазин успешно создан' })
+  @ApiResponse({
+    status: 400,
+    description: 'Некорректные данные или ошибка загрузки файла',
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Не авторизован (отсутствует или неверный JWT)',
+  })
+  @ApiResponse({
+    status: 409,
+    description: 'Магазин с таким slug (URL) уже существует',
+  })
   create(
     @CurrentUser('id') userId: string,
     @Body() dto: CreateStoreDto,
@@ -38,12 +90,62 @@ export class StoresController {
     return this.storesService.createStore(userId, dto, files);
   }
 
-  @Delete(':id')
-  deleteStore(@CurrentUser('id') userId: string, @Param('id') storeId: string) {
-    return this.storesService.deleteStore(userId, storeId);
+  @Get('my')
+  @ApiOperation({
+    summary: 'Получить свои магазины',
+    description:
+      'Возвращает список всех магазинов, где текущий пользователь является участником (владельцем или менеджером).',
+  })
+  @ApiResponse({ status: 200, description: 'Список магазинов успешно получен' })
+  @ApiResponse({ status: 401, description: 'Не авторизован' })
+  getMyStores(@CurrentUser('id') userId: string) {
+    return this.storesService.getMyStores(userId);
+  }
+
+  @Get(':id')
+  @ApiOperation({
+    summary: 'Получить магазин по ID',
+    description:
+      'Возвращает подробную информацию о конкретном магазине, если у пользователя есть к нему доступ.',
+  })
+  @ApiParam({
+    name: 'id',
+    description: 'UUID магазина',
+    example: '123e4567-e89b-12d3-a456-426614174000',
+  })
+  @ApiResponse({ status: 200, description: 'Информация о магазине' })
+  @ApiResponse({ status: 401, description: 'Не авторизован' })
+  @ApiResponse({
+    status: 404,
+    description: 'Магазин не найден или нет доступа',
+  })
+  getStoreById(
+    @CurrentUser('id') userId: string,
+    @Param('id') storeId: string,
+  ) {
+    return this.storesService.getStoreById(userId, storeId);
   }
 
   @Patch(':id')
+  @ApiOperation({
+    summary: 'Обновить магазин',
+    description:
+      'Обновляет данные магазина. Доступно только владельцу (OWNER). Можно передавать только те поля, которые нужно изменить.',
+  })
+  @ApiParam({
+    name: 'id',
+    description: 'UUID магазина',
+    example: '123e4567-e89b-12d3-a456-426614174000',
+  })
+  @ApiResponse({ status: 200, description: 'Магазин успешно обновлен' })
+  @ApiResponse({ status: 400, description: 'Некорректные данные' })
+  @ApiResponse({ status: 401, description: 'Не авторизован' })
+  @ApiResponse({
+    status: 403,
+    description: 'Нет прав (пользователь не является владельцем)',
+  })
+  @ApiResponse({ status: 404, description: 'Магазин не найден' })
+  @ApiResponse({ status: 409, description: 'Новый slug уже занят' })
   updateStore(
     @CurrentUser('id') userId: string,
     @Param('id') storeId: string,
@@ -52,16 +154,25 @@ export class StoresController {
     return this.storesService.updateStore(userId, storeId, dto);
   }
 
-  @Get('my')
-  getMyStores(@CurrentUser('id') userId: string) {
-    return this.storesService.getMyStores(userId);
-  }
-
-  @Get(':id')
-  getStoreById(
-    @CurrentUser('id') userId: string,
-    @Param('id') storeId: string,
-  ) {
-    return this.storesService.getStoreById(userId, storeId);
+  @Delete(':id')
+  @ApiOperation({
+    summary: 'Удалить магазин',
+    description:
+      'Удаляет магазин и все связанные с ним данные (участники, товары). Доступно только владельцу (OWNER).',
+  })
+  @ApiParam({
+    name: 'id',
+    description: 'UUID магазина',
+    example: '123e4567-e89b-12d3-a456-426614174000',
+  })
+  @ApiResponse({ status: 200, description: 'Магазин успешно удален' })
+  @ApiResponse({ status: 401, description: 'Не авторизован' })
+  @ApiResponse({
+    status: 403,
+    description: 'Нет прав (пользователь не является владельцем)',
+  })
+  @ApiResponse({ status: 404, description: 'Магазин не найден' })
+  deleteStore(@CurrentUser('id') userId: string, @Param('id') storeId: string) {
+    return this.storesService.deleteStore(userId, storeId);
   }
 }
