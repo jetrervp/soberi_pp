@@ -8,6 +8,7 @@ import { StoresModule } from './stores/stores.module';
 import { GoodsModule } from './goods/goods.module';
 import { OrdersModule } from './orders/orders.module';
 import { AnalyticsModule } from './analytics/analytics.module';
+import { CouponsModule } from './coupons/coupons.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { AnalyticsModule } from './analytics/analytics.module';
     GoodsModule,
     OrdersModule,
     AnalyticsModule,
+    CouponsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

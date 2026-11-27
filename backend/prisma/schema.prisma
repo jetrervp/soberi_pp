@@ -37,6 +37,11 @@ enum PaymentMethod {
   CASH_ON_DELIVERY
 }
 
+enum DiscountType {
+  PERCENTAGE
+  FIXED
+}
+
 model User {
   id            String        @id @default(uuid())
   email         String        @unique
@@ -64,6 +69,7 @@ model Store {
   members     StoreMember[]
   goods       Good[]
   orders      Order[]
+  coupons     Coupon[]
 }
 
 model StoreMember {
@@ -144,6 +150,8 @@ model Order {
   createdAt     DateTime      @default(now())
   updatedAt     DateTime      @updatedAt
   items         OrderItem[]
+  couponId      String?
+  coupon        Coupon?  @relation(fields: [couponId], references: [id])
 
   @@index([storeId])
   @@index([userId])
@@ -162,5 +170,25 @@ model OrderItem {
   
   quantity Int
   price    Int     
+}
+
+model Coupon {
+  id             String        @id @default(uuid())
+  storeId        String
+  store          Store         @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  
+  code           String        @unique
+  discountType   DiscountType
+  discountValue  Int           
+  
+  minOrderAmount Int?          
+  maxUses        Int?          
+  usedCount      Int           @default(0) 
+  
+  validUntil     DateTime?     
+  isActive       Boolean       @default(true)
+  createdAt      DateTime      @default(now())
+  
+  orders         Order[]       
 }
 
